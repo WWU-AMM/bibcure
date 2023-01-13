@@ -11,17 +11,13 @@ def update_bib(bib_arxiv, automatic=True, i=0):
     arxiv_id = bib_arxiv["journal"].partition(":")[2]
     arxiv_title = bib_arxiv["title"]
 
-    found, published, bib_string = check_arxiv_published(
-        arxiv_id,
-        field="id"
-    )
+    found, published, bib_string = check_arxiv_published(arxiv_id, field="id")
     bib = bibtexparser.loads(bib_string)
     if found:
         if automatic:
             bib = bib.entries[0]
         else:
-            question = "{} >> {} ".format(arxiv_title,
-                                          bib.entries[0]["title"])
+            question = "{} >> {} ".format(arxiv_title, bib.entries[0]["title"])
             question += " was "
             if not published:
                 question += " not published. Use bib from arxiv?y/n"
@@ -35,17 +31,16 @@ def update_bib(bib_arxiv, automatic=True, i=0):
 
         bib["ID"] = bib_id
     else:
-        print("'{}' not founded with a id {}".format(
-            arxiv_title,
-            arxiv_id
-        ))
+        print("'{}' not founded with a id {}".format(arxiv_title, arxiv_id))
         bib = bib_arxiv
 
     return bib
 
 
 def update_bibs_arxiv(bibs):
-    action = input("Check if arxiv have been published?y(yes, automatic)/m(manual)/n(do nothing)")
+    action = input(
+        "Check if arxiv have been published?y(yes, automatic)/m(manual)/n(do nothing)"
+    )
 
     if action not in ("y", "m", "n"):
         return update_bibs_arxiv(bibs)

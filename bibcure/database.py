@@ -6,18 +6,17 @@ import json
 import pkg_resources
 import os.path
 import bisect
+
 # import pdb
 
 home_path = os.path.expanduser("~")
-config_file = home_path+"/.bibcure/db.json"
+config_file = home_path + "/.bibcure/db.json"
 config_file_exists = os.path.exists(config_file)
 
 if config_file_exists:
     db_path = config_file
 else:
-    db_path = pkg_resources.resource_filename("bibcure",
-
-                                  "data/db_abbrev.json")
+    db_path = pkg_resources.resource_filename("bibcure", "data/db_abbrev.json")
 
 
 class Db_abbrev(object):
@@ -29,28 +28,20 @@ class Db_abbrev(object):
     def open(self):
         with open(self.db_file) as file_data:
             self.db = json.load(file_data)
-            self.db_names = [
-                item["name"].lower().replace(" ", "")
-                for item in self.db
-            ]
+            self.db_names = [item["name"].lower().replace(" ", "") for item in self.db]
             self.db_abbrevs = [
-                item["abbrev"].lower().replace(" ", "")
-                for item in self.db
+                item["abbrev"].lower().replace(" ", "") for item in self.db
             ]
 
     def insert(self, name, abbrev):
-        return self.updates_db.append({
-            "name": name,
-            "abbrev": abbrev,
-            "what": "insert"
-        })
+        return self.updates_db.append(
+            {"name": name, "abbrev": abbrev, "what": "insert"}
+        )
 
     def update(self, name, abbrev):
-        return self.updates_db.append({
-            "name": name,
-            "abbrev": abbrev,
-            "what": "update"
-        })
+        return self.updates_db.append(
+            {"name": name, "abbrev": abbrev, "what": "update"}
+        )
 
     def get_index(self, value, key="name"):
         value = value.lower().replace(" ", "")
@@ -83,8 +74,8 @@ class Db_abbrev(object):
 
             if what == "insert":
                 index = self.find_closet_index(data["name"])
-    #avoid duplication
-                if self.db_names[index-1] != data["name"]:
+                # avoid duplication
+                if self.db_names[index - 1] != data["name"]:
                     self.db.insert(index, data)
             else:
                 index = self.get_index(data["name"])
